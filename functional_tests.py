@@ -32,14 +32,11 @@ class NewVisitorTest(unittest.TestCase):
 
         # When she hits enter, the page updates and the page lists her task as an item in the todo list
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
+        time.sleep(10)
 
         table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_element_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Buy peacock feathers' for row in rows), 
-            "New to do is not in table"
-        )
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
 
         # There is a text box asking her to add another item.
         # She enters 'use peackcok deathers to make a fly'
