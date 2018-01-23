@@ -10,6 +10,11 @@ class NewVisitorTest(unittest.TestCase):
 
     def tearDown(self):
     	self.browser.quit()
+
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = self.browser.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
     
     def test_can_start_a_list_and_retrieve_it_later(self):
 	    # Kelly has heard about a new online todo app.  She checks out its homepage
@@ -32,19 +37,23 @@ class NewVisitorTest(unittest.TestCase):
 
         # When she hits enter, the page updates and the page lists her task as an item in the todo list
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(10)
+        time.sleep(2)
 
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
 
         # There is a text box asking her to add another item.
         # She enters 'use peackcok deathers to make a fly'
-        self.fail('Finish the test!')
+        inputbox =  self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Use peacock feathers to make a fly')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(2)
 
         # The page updates again and shows both items on her list
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
+        self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
         # Kelly wonders whether the site will remember her list and sees the site has a unique url for her request
+        self.fail('Finish the test!')
 
         # She visits the url and sees her items still there
 
